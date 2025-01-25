@@ -1,0 +1,6 @@
+"./Drivers/Src/stm32f1xx_gpio.o"
+"./Drivers/Src/stm32f1xx_usart.o"
+"./Src/006_uart_rx_it_test.o"
+"./Src/syscalls.o"
+"./Src/sysmem.o"
+"./Startup/startup_stm32f103rbtx.o"
