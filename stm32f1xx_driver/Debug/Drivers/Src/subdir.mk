@@ -6,14 +6,17 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../Drivers/Src/stm32f1xx_gpio.c \
+../Drivers/Src/stm32f1xx_spi.c \
 ../Drivers/Src/stm32f1xx_usart.c 
 
 OBJS += \
 ./Drivers/Src/stm32f1xx_gpio.o \
+./Drivers/Src/stm32f1xx_spi.o \
 ./Drivers/Src/stm32f1xx_usart.o 
 
 C_DEPS += \
 ./Drivers/Src/stm32f1xx_gpio.d \
+./Drivers/Src/stm32f1xx_spi.d \
 ./Drivers/Src/stm32f1xx_usart.d 
 
 
@@ -24,7 +27,7 @@ Drivers/Src/%.o Drivers/Src/%.su Drivers/Src/%.cyclo: ../Drivers/Src/%.c Drivers
 clean: clean-Drivers-2f-Src
 
 clean-Drivers-2f-Src:
-	-$(RM) ./Drivers/Src/stm32f1xx_gpio.cyclo ./Drivers/Src/stm32f1xx_gpio.d ./Drivers/Src/stm32f1xx_gpio.o ./Drivers/Src/stm32f1xx_gpio.su ./Drivers/Src/stm32f1xx_usart.cyclo ./Drivers/Src/stm32f1xx_usart.d ./Drivers/Src/stm32f1xx_usart.o ./Drivers/Src/stm32f1xx_usart.su
+	-$(RM) ./Drivers/Src/stm32f1xx_gpio.cyclo ./Drivers/Src/stm32f1xx_gpio.d ./Drivers/Src/stm32f1xx_gpio.o ./Drivers/Src/stm32f1xx_gpio.su ./Drivers/Src/stm32f1xx_spi.cyclo ./Drivers/Src/stm32f1xx_spi.d ./Drivers/Src/stm32f1xx_spi.o ./Drivers/Src/stm32f1xx_spi.su ./Drivers/Src/stm32f1xx_usart.cyclo ./Drivers/Src/stm32f1xx_usart.d ./Drivers/Src/stm32f1xx_usart.o ./Drivers/Src/stm32f1xx_usart.su
 
 .PHONY: clean-Drivers-2f-Src
 

@@ -178,18 +178,6 @@ void	USART_DeInit(USART_Handle_t *pUSARTHandle)
 {
 	/* USART Peripheral Disable */
 	USART_PeripheralControl(pUSARTHandle->pUSARTx, DISABLE);
-
-	/* Reset CR1 Register */
-	pUSARTHandle->pUSARTx->CR1 = 0x00000000U;
-
-	/* Reset CR2 Register */
-	pUSARTHandle->pUSARTx->CR2 = 0x00000000U;
-
-	/* Reset CR3 Register */
-	pUSARTHandle->pUSARTx->CR3 = 0x00000000U;
-
-	/* Reset BRR Register */
-	pUSARTHandle->pUSARTx->BRR = 0x00000000U;
 }
 
 /**

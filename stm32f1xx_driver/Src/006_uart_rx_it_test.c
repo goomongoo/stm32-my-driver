@@ -12,7 +12,10 @@
 char rcv;
 char buf[128];
 
-USART_Handle_t	USART2Handle;
+//USART_Handle_t	USART2Handle;
+USART_Handle_t	USART1Handle;
+
+char *bufptr;
 
 void delay()
 {
@@ -60,18 +63,58 @@ void USART2_Init(USART_Handle_t *pUSARTHandle)
 	USART_Init(pUSARTHandle);
 }
 
+void USART1_GPIOInit()
+{
+	GPIO_Handle_t	USART1_GPIOHandle;
+
+	USART1_GPIOHandle.pGPIOx = GPIOA;
+	USART1_GPIOHandle.PinConfig.Pin = GPIO_PIN_9;
+	USART1_GPIOHandle.PinConfig.Mode = GPIO_MODE_AF_PP;
+	USART1_GPIOHandle.PinConfig.Pull = GPIO_NOPULL;
+	USART1_GPIOHandle.PinConfig.Speed = GPIO_SPEED_FREQ_HIGH;
+
+	GPIO_Init(&USART1_GPIOHandle);
+
+	USART1_GPIOHandle.PinConfig.Pin = GPIO_PIN_10;
+	USART1_GPIOHandle.PinConfig.Mode = GPIO_MODE_INPUT;
+	USART1_GPIOHandle.PinConfig.Pull = GPIO_PULLUP;
+	USART1_GPIOHandle.PinConfig.Speed = GPIO_SPEED_FREQ_HIGH;
+
+	GPIO_Init(&USART1_GPIOHandle);
+}
+
+void USART1_Init(USART_Handle_t *pUSARTHandle)
+{
+	pUSARTHandle->pUSARTx = USART1;
+	pUSARTHandle->Config.Mode = UART_MODE_TX_RX;
+	pUSARTHandle->Config.WordLength = UART_WORDLENGTH_8B;
+	pUSARTHandle->Config.StopBits = UART_STOPBITS_1;
+	pUSARTHandle->Config.Parity = UART_PARITY_NONE;
+	pUSARTHandle->Config.HwFlowCtl = UART_HWCONTROL_NONE;
+	pUSARTHandle->Config.BaudRate = UART_BAUDRATE_115200;
+
+	USART_Init(pUSARTHandle);
+}
+
 int main(void)
 {
 	//GPIO_Handle_t	BtnHandle;
 	//USART_Handle_t	USART2Handle;
 
 	//GPIO_BtnInit(&BtnHandle);
-	USART2_GPIOInit();
-	USART2_Init(&USART2Handle);
-	USART_IRQInterruptConfig(IRQ_NO_USART2, ENABLE);
-	USART_IRQPriorityConfig(IRQ_NO_USART2, NVIC_IRQ_PRI47);
+	//USART2_GPIOInit();
+	//USART2_Init(&USART2Handle);
+	//USART_IRQInterruptConfig(IRQ_NO_USART2, ENABLE);
+	//USART_IRQPriorityConfig(IRQ_NO_USART2, NVIC_IRQ_PRI47);
 
-	USART_Receive_IT(&USART2Handle, (uint8_t *)&rcv, 1);
+	USART1_GPIOInit();
+	USART1_Init(&USART1Handle);
+	USART_IRQInterruptConfig(IRQ_NO_USART1, ENABLE);
+	USART_IRQPriorityConfig(IRQ_NO_USART1, NVIC_IRQ_PRI44);
+
+	bufptr = buf;
+
+	USART_Receive_IT(&USART1Handle, (uint8_t *)&rcv, 1);
 
 	while (1)
 	{
@@ -79,14 +122,22 @@ int main(void)
 	}
 }
 
-void USART2_IRQHandler(void)
+void USART1_IRQHandler(void)
 {
-	USART_IRQHandler(&USART2Handle);
+	USART_IRQHandler(&USART1Handle);
 }
 
 void USART_RxCpltCallback(USART_Handle_t *pUSARTHandle)
 {
-	sprintf(buf, "%c\n\r", rcv);
-	USART_Transmit(pUSARTHandle, (uint8_t *)buf, strlen(buf));
-	USART_Receive_IT(&USART2Handle, (uint8_t *)&rcv, 1);
+	if (rcv == '\r')
+	{
+		*bufptr = '\0';
+		bufptr = buf;
+		printf("%s\n", buf);
+	}
+	else
+	{
+		*bufptr++ = rcv;
+	}
+	USART_Receive_IT(pUSARTHandle, (uint8_t *)&rcv, 1);
 }
